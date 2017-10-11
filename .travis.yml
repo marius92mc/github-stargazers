@@ -1,0 +1,18 @@
+language: python
+python:
+  - "3.6"
+
+os:
+  - linux
+
+install:
+  - pip3 install pipenv
+  - pipenv install
+
+script:
+  - pipenv run mypy src/*
+  - pipenv run pylint src/*
+
+notifications:
+    email: false
+
