@@ -3,21 +3,17 @@ verify_ssl = true
 name = "pypi"
 url = "https://pypi.python.org/simple"
 
+[requires]
+python_version = "3.6"
+
 [dev-packages]
 ipython = "*"
-
-
-
+autopep8 = "*"
 
 [packages]
-
 mypy = "*"
 pylint = "*"
 requests = "*"
-"beautifulsoup4" = "*"
+beautifulsoup4 = "*"
 click = "*"
 halo = "*"
-
-
-[requires]
-python_version = "3.6"
