@@ -1,6 +1,13 @@
 # GitHub Stargazers
 
+List stargazers and check if a user starred that repository
+
 [![Build Status](https://travis-ci.com/marius92mc/github-stargazers.svg?token=NxgJCKyxyV3vmKhB6EpL&branch=master)](https://travis-ci.com/marius92mc/github-stargazers)
+
+## Install 
+```
+$ pip3 install github-stargazers
+```
 
 ## Requirements 
 - Python 3.6
