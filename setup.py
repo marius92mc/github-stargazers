@@ -6,7 +6,7 @@ setup(
     name='github-stargazers',
     #package_dir = {'': 'github-stargazers'},
     packages=['github_stargazers'],
-    version='0.0.1',
+    version='0.0.2',
     description='List stargazers and check if a user starred that repository',
     author='Marius-Constantin Melemciuc',
     author_email='mariuspypi@gmail.com',
