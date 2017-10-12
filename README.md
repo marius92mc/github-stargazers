@@ -43,3 +43,17 @@ where `OPTIONS` could be
 ```
 pipenv run ipython
 ```
+
+## Tests 
+Run the unit-tests. 
+```
+$ pipenv run pytest
+```
+or with more detailed output, like this `$ pipenv run pytest -vv -s -x`. 
+
+- Debug failing tests 
+```
+$ pipenv run pytest -vv -x --pdb --showlocals
+```
+For more details, see the [pytest documentation](https://docs.pytest.org/en/latest/usage.html). 
+
