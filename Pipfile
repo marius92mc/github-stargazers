@@ -6,6 +6,11 @@ url = "https://pypi.python.org/simple"
 [requires]
 python_version = "3.6"
 
+[dev-packages]
+ipython = "*"
+autopep8 = "*"
+pytest = "*"
+
 [packages]
 mypy = "*"
 pylint = "*"
@@ -14,8 +19,8 @@ beautifulsoup4 = "*"
 click = "*"
 halo = "*"
 ipython = "*"
-
-[dev-packages]
-ipython = "*"
+ipdb = "*"
+py = "*"
+mock = "*"
+responses = "*"
 autopep8 = "*"
-pytest = "*"

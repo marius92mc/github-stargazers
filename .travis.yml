@@ -12,6 +12,7 @@ install:
 script:
   - pipenv run mypy src/*
   - pipenv run pylint src/*
+  - pipenv run pytest -vv -s -x
 
 notifications:
     email: false

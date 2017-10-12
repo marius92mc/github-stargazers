@@ -37,6 +37,10 @@ class GitHub:
         components: typing.List[str] = username_and_repository.split("/")
         if len(components) != 2:
             raise UsernameRepositoryError()
+        for component in components:
+            if component == "":
+                raise UsernameRepositoryError()
+
         return components[0], components[1]
 
     def __get_repository_url(self):
@@ -50,7 +54,7 @@ class GitHub:
             return BeautifulSoup(response.text, "html.parser")
         if status_code == self.__TOO_MANY_REQUESTS_STATUS_CODE:
             Halo().fail("Too many requests.")
-        print("{} HTTP".format(status_code))
+        print("\n{} HTTP".format(status_code))
         return None
 
     def __extract_stargazers_from_url(self, url: str) -> typing.Optional[typing.List[str]]:
@@ -78,12 +82,16 @@ class GitHub:
         page_number: int = 1
 
         all_stargazers: typing.List[str] = []
+        previous_stargazers: typing.List[str] = []
         while True:
             current_url: str = self.__get_url_page_template(page_number)
             current_stargazers: typing.List[str] = self.__extract_stargazers_from_url(current_url)
             if not current_stargazers:
                 break
+            if current_stargazers == previous_stargazers:
+                break
             all_stargazers += current_stargazers
+            previous_stargazers = current_stargazers
             page_number += 1
 
         return sorted(all_stargazers)
@@ -91,13 +99,17 @@ class GitHub:
     def is_stargazer(self, user: str) -> bool:
         page_number: int = 1
 
+        previous_stargazers: typing.List[str] = []
         while True:
             current_url: str = self.__get_url_page_template(page_number)
             current_stargazers: typing.List[str] = self.__extract_stargazers_from_url(current_url)
             if not current_stargazers:
                 break
+            if current_stargazers == previous_stargazers:
+                break
             if user in current_stargazers:
                 return True
+            previous_stargazers = current_stargazers
             page_number += 1
 
         return False
