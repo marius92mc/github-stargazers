@@ -3,13 +3,13 @@ verify_ssl = true
 name = "pypi"
 url = "https://pypi.python.org/simple"
 
-[requires]
-python_version = "3.6"
-
 [dev-packages]
 ipython = "*"
 autopep8 = "*"
 pytest = "*"
+
+[requires]
+python_version = "3.6"
 
 [packages]
 mypy = "*"
@@ -24,3 +24,6 @@ py = "*"
 mock = "*"
 responses = "*"
 autopep8 = "*"
+twine = "*"
+wheel = "*"
+setuptools = "*"
