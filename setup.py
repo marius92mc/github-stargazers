@@ -4,9 +4,17 @@ from setuptools import setup
 
 setup(
     name='github-stargazers',
-    #package_dir = {'': 'github-stargazers'},
     packages=['github_stargazers'],
     version='0.0.3',
+    entry_points={
+        'console_scripts': [
+            'github-stargazers=github_stargazers.github_stargazers:main'
+         ]
+    },
+    install_requires=[
+        'beautifulsoup4==4.6.0',
+        'click==6.7'
+    ],
     description='List stargazers and check if a user starred that repository',
     author='Marius-Constantin Melemciuc',
     author_email='mariuspypi@gmail.com',
