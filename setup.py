@@ -4,7 +4,8 @@ from setuptools import setup
 
 setup(
     name='github-stargazers',
-    packages=['github-stargazers'],
+    #package_dir = {'': 'github-stargazers'},
+    packages=['github_stargazers'],
     version='0.0.1',
     description='List stargazers and check if a user starred that repository',
     author='Marius-Constantin Melemciuc',

@@ -2,8 +2,8 @@
 import pytest
 import responses
 
-from src.github_stargazers import GitHub
-from src.github_stargazers import UsernameRepositoryError
+from github_stargazers.github_stargazers import GitHub
+from github_stargazers.github_stargazers import UsernameRepositoryError
 
 
 def test_wrong_argument_raises() -> None:
