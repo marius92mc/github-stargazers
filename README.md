@@ -1,13 +1,17 @@
 # GitHub Stargazers
 
-List stargazers and check if a user starred that repository
+[![Build Status](https://travis-ci.org/marius92mc/github-stargazers.svg?branch=master)](https://travis-ci.org/marius92mc/github-stargazers)
+[![PyPI version](https://badge.fury.io/py/github-stargazers.svg)](https://badge.fury.io/py/github-stargazers)
 
-[![Build Status](https://travis-ci.com/marius92mc/github-stargazers.svg?token=NxgJCKyxyV3vmKhB6EpL&branch=master)](https://travis-ci.com/marius92mc/github-stargazers)
+List stargazers and check if a user starred that repository.
 
 ## Install 
 ```
 $ pip3 install github-stargazers
 ```
+
+## Usage 
+TODO _from installed package_
 
 ## Requirements 
 - Python 3.6
@@ -32,12 +36,15 @@ $ pipenv install
 
 ## Run 
 ```
-$ pipenv run python src/github_stargazers.py <username>/<repository> [OPTIONS]
+$ pipenv run python github_stargazers/github_stargazers.py <username>/<repository> [OPTIONS]
 ```
 where `OPTIONS` could be 
 ```
---user   User name to see if it is a stargazer
+--user <username>  User name to see if it is a stargazer, 
+                   where username represents the GitHub name. 
 ```
+If it's used without `--user`, it just shows repository's stargazers. 
+When it is used with `--user`, it shows if that user starred the repository or not. 
 
 ## Run autopep8, mypy, pylint 
 ```
