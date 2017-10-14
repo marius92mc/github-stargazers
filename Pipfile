@@ -3,9 +3,6 @@ verify_ssl = true
 name = "pypi"
 url = "https://pypi.python.org/simple"
 
-[requires]
-python_version = "3.6"
-
 [packages]
 mypy = "*"
 pylint = "*"
@@ -22,6 +19,10 @@ autopep8 = "*"
 twine = "*"
 wheel = "*"
 setuptools = "*"
+pypandoc = "*"
+
+[requires]
+python_version = "3.6"
 
 [dev-packages]
 ipython = "*"
