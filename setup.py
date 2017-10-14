@@ -3,6 +3,10 @@ from os import path
 from setuptools import setup
 
 
+def get_version():
+    return '0.0.3'
+
+
 def get_long_description():
     try:
         import pypandoc
@@ -16,14 +20,14 @@ setup(
     name='github-stargazers',
     #package_dir = {'': 'github-stargazers'},
     packages=['github_stargazers'],
-    version='0.0.3',
+    version=get_version(),
     description='List stargazers and check if a user starred that repository',
     long_description=get_long_description(),
     author='Marius-Constantin Melemciuc',
     author_email='mariuspypi@gmail.com',
     url='https://github.com/marius92mc/github-stargazers',
     download_url='https://github.com/' +
-    'marius92mc/github-stargazers/archive/0.0.1.tar.gz',
+    'marius92mc/github-stargazers/archive/' + get_version() + '.tar.gz',
     keywords=[
         'command-line',
         'python',
