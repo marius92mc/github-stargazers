@@ -12,7 +12,7 @@ install:
 script:
   - pipenv run mypy github_stargazers/*
   - pipenv run pylint github_stargazers/*
-  - pipenv run pytest -vv -s -x
+  - pipenv run pytest -vv
 
 notifications:
     email: false
