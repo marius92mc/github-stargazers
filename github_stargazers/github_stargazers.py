@@ -119,8 +119,12 @@ class GitHub:
 @click.argument('username_and_repository')
 @click.option('--user', default=None, help='User name to see if it is a stargazer')
 def process_command(username_and_repository, user):
-    github = GitHub(username_and_repository)
-
+    try:
+        github = GitHub(username_and_repository)
+    except UsernameRepositoryError:
+        message = "Wrong arguments. It should be of form username/repository, e.g. marius92mc/github-stargazers"
+        Halo().fail(message)
+        return
     if not user:
         stargazers: typing.List[str] = github.get_all_stargazers()
         print("Stargazers: ")
