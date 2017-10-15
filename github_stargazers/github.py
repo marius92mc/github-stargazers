@@ -48,7 +48,7 @@ class GitHub:
     def __get_soup(self, url: str) -> typing.Optional[BeautifulSoup]:
         response = requests.get(url)
 
-        status_code: int = requests.get(url).status_code
+        status_code: int = response.status_code
         if status_code == self.__OK_STATUS_CODE:
             return BeautifulSoup(response.text, "html.parser")
         if status_code == self.__TOO_MANY_REQUESTS_STATUS_CODE:
