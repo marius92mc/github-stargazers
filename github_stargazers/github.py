@@ -2,7 +2,6 @@ import typing
 import os
 
 from bs4 import BeautifulSoup
-from halo import Halo
 import requests
 
 
@@ -10,6 +9,18 @@ class UsernameRepositoryError(Exception):
 
     def __init__(self) -> None:
         super().__init__("Argument should be of form username/repository.")
+
+
+class TooManyRequestsHttpError(Exception):
+
+    def __init__(self) -> None:
+        super().__init__("Too many requests.")
+
+
+class HTTPError(Exception):
+
+    def __init__(self, status_code: int) -> None:
+        super().__init__("{} HTTP.".format(status_code))
 
 
 class GitHub:
@@ -27,7 +38,7 @@ class GitHub:
     __MARK_END_OF_STARGAZERS: typing.List[str] = ['This repository has no more stargazers.']
 
     def __init__(self, username_and_repository: str) -> None:
-        self.__username, self.__repository = self.__extract_user_and_repo(username_and_repository)
+        self.__username, self.__repository = GitHub.__extract_user_and_repo(username_and_repository)
         self.__repository_url = self.__get_repository_url()
         self.__stargazers_base_url = self.__repository_url + self.__STARGAZERS_URL_SUFFIX
 
@@ -52,24 +63,17 @@ class GitHub:
         if status_code == self.__OK_STATUS_CODE:
             return BeautifulSoup(response.text, "html.parser")
         if status_code == self.__TOO_MANY_REQUESTS_STATUS_CODE:
-            Halo().fail("Too many requests.")
-        print("\n{} HTTP".format(status_code))
-        return None
+            raise TooManyRequestsHttpError()
+        raise HTTPError(status_code)
 
-    def __extract_stargazers_from_url(self, url: str) -> typing.Optional[typing.List[str]]:
-        spinner = Halo(text="Loading... " + url, spinner="dots")
-        spinner.start()
-
+    def __extract_stargazers_from_url(self, url: str) -> typing.List[str]:
         soup = self.__get_soup(url)
-        if not soup:
-            return None
         h3_components = soup.find_all('h3')
 
         users: typing.List[str] = []
         for component in h3_components:
             users.append(component.get_text())
 
-        spinner.stop()
         if users == self.__MARK_END_OF_STARGAZERS:
             return []
         return users
