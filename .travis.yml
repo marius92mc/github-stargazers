@@ -1,13 +1,16 @@
 language: python
 python:
-  - "3.6"
+  - "3.6.2"
 
 os:
   - linux
 
+env:
+  - PIPENV_IGNORE_VIRTUALENVS=1
+
 install:
   - pip3 install pipenv
-  - pipenv install
+  - pipenv install --dev
 
 script:
   - pipenv run mypy github_stargazers/*
