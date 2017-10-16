@@ -10,6 +10,7 @@ env:
 
 install:
   - pip3 install pipenv
+  - pipenv run python setup.py install
   - pipenv install --dev
 
 script:
