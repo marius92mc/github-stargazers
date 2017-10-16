@@ -1,5 +1,7 @@
+import typing
 
-def get_examples_invalid_user_repo() -> str:
+
+def get_examples_invalid_user_repo() -> typing.List[str]:
     return [
         "another_foo/bar",
         "foo/another_bar",
