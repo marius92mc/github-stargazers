@@ -6,6 +6,7 @@ import responses
 from github_stargazers.github_stargazers import command_line
 from tests import get_examples_invalid_user_repo
 
+
 @pytest.fixture
 def url_page_content() -> str:
     return "<h3>foo</h3> <h3>bar</h3>"
@@ -47,12 +48,14 @@ def test_wrong_arguments(wrong_arguments_message: str) -> None:
 
 
 @responses.activate
-def test_user_and_repository(url_page_content: str) -> None:
+def test_user_and_repository(url_page_content: str,
+                             http_ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content,
-        status=200)
+        status=http_ok_status_code
+    )
     runner = CliRunner()
     result = runner.invoke(command_line, ['foo/bar'])
     assert result.exit_code == 0
@@ -60,24 +63,26 @@ def test_user_and_repository(url_page_content: str) -> None:
 
 
 @pytest.fixture
-def http_404(halo_fail: str) -> str:
-    return halo_fail +  "404 HTTP.\n"
+def http_not_found(halo_fail: str, http_not_found_status_code: int) -> str:
+    return halo_fail + str(http_not_found_status_code) + " HTTP.\n"
 
 
 @pytest.mark.parametrize("invalid_user_and_repo", get_examples_invalid_user_repo())
 @responses.activate
 def test_get_all_stargazers_on_invalid_user_repo(url_page_content: str,
                                                  invalid_user_and_repo: str,
-                                                 http_404: str) -> None:
+                                                 http_not_found_status_code: int,
+                                                 http_not_found: str) -> None:
     responses.add(
         responses.GET,
         "https://github.com/" + invalid_user_and_repo + "/stargazers?page=1",
         body=url_page_content,
-        status=404)
+        status=http_not_found_status_code
+    )
     runner = CliRunner()
     result = runner.invoke(command_line, [invalid_user_and_repo])
     assert result.exit_code == 0
-    assert result.output == http_404
+    assert result.output == http_not_found
 
 
 @pytest.fixture
@@ -87,12 +92,14 @@ def http_too_many_requests(halo_fail: str) -> str:
 
 @responses.activate
 def test_get_all_stargazers_on_too_many_requests(url_page_content: str,
+                                                 http_too_many_requests_status_code: int,
                                                  http_too_many_requests: str) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content,
-        status=429)
+        status=http_too_many_requests_status_code
+    )
     runner = CliRunner()
     result = runner.invoke(command_line, ['foo/bar'])
     assert result.exit_code == 0
@@ -100,12 +107,15 @@ def test_get_all_stargazers_on_too_many_requests(url_page_content: str,
 
 
 @responses.activate
-def test_is_stargazer(url_page_content: str, stargazer: str) -> None:
+def test_is_stargazer(url_page_content: str,
+                      stargazer: str,
+                      http_ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content,
-        status=200)
+        status=http_ok_status_code
+    )
     runner = CliRunner()
     result = runner.invoke(command_line, ['foo/bar', '--user', 'foo'])
     assert result.exit_code == 0
@@ -113,12 +123,15 @@ def test_is_stargazer(url_page_content: str, stargazer: str) -> None:
 
 
 @responses.activate
-def test_not_a_stargazer(url_page_content: str, not_a_stargazer: str) -> None:
+def test_not_a_stargazer(url_page_content: str,
+                         not_a_stargazer: str,
+                         http_ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content,
-        status=200)
+        status=http_ok_status_code
+    )
     runner = CliRunner()
     result = runner.invoke(command_line, ['foo/bar', '--user', 'another_foo'])
     assert result.exit_code == 0
@@ -126,25 +139,31 @@ def test_not_a_stargazer(url_page_content: str, not_a_stargazer: str) -> None:
 
 
 @responses.activate
-def test_stargazer_on_invalid_page(url_page_content: str, http_404: str) -> None:
+def test_stargazer_on_invalid_page(url_page_content: str,
+                                   http_not_found: str,
+                                   http_not_found_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content,
-        status=404)
+        status=http_not_found_status_code
+    )
     runner = CliRunner()
     result = runner.invoke(command_line, ['foo/bar', '--user', 'foo'])
     assert result.exit_code == 0
-    assert result.output == http_404
+    assert result.output == http_not_found
 
 
 @responses.activate
-def test_stargazer_on_too_many_requests_page(url_page_content: str, http_too_many_requests: str) -> None:
+def test_stargazer_on_too_many_requests_page(url_page_content: str,
+                                             http_too_many_requests_status_code: int,
+                                             http_too_many_requests: str) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content,
-        status=429)
+        status=http_too_many_requests_status_code
+    )
     runner = CliRunner()
     result = runner.invoke(command_line, ['foo/bar', '--user', 'foo'])
     assert result.exit_code == 0
