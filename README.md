@@ -19,6 +19,9 @@ $ pipenv install github-stargazers
 ```
 
 ## Usage 
+
+### As a command-line app
+
 ```
 $ pipenv run github-stargazers <username>/<repository> [OPTIONS]
 ```
@@ -34,6 +37,17 @@ When it's used with `--user`, it shows if that user starred the repository or no
 Example: 
 ```
 $ pipenv run github-stargazers marius92mc/github-stargazers 
+```
+
+### As an imported
+
+```Python
+from github_stargazers.github import GitHub
+
+github = GitHub("yasoob/fb-messenger-bot")
+
+print(github.get_all_stargazers())
+print(github.is_stargazer("Robin"))
 ```
 
 ## Running from source
