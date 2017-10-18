@@ -1,5 +1,6 @@
 # pylint: disable=no-member,invalid-name,redefined-outer-name
 from click.testing import CliRunner
+from click.testing import Result
 import pytest
 import responses
 
@@ -37,14 +38,18 @@ def wrong_arguments_message(halo_fail: str) -> str:
     return halo_fail + "Argument should be of form username/repository.\n"
 
 
+def verify_invoke_from_clirunner(result: Result, expected_output: str) -> None:
+    assert result.exit_code == 0
+    assert result.output == expected_output
+
+
 @responses.activate
 def test_wrong_arguments(wrong_arguments_message: str) -> None:
     wrong_arguments = ["foo", "foo/", "/bar", "/", "//", ""]
     for wrong_argument in wrong_arguments:
         runner = CliRunner()
         result = runner.invoke(command_line, [wrong_argument])
-        assert result.exit_code == 0
-        assert result.output == wrong_arguments_message
+        verify_invoke_from_clirunner(result, wrong_arguments_message)
 
 
 @responses.activate
@@ -58,8 +63,7 @@ def test_user_and_repository(url_page_content: str,
     )
     runner = CliRunner()
     result = runner.invoke(command_line, ['foo/bar'])
-    assert result.exit_code == 0
-    assert result.output == 'Stargazers:\nbar\nfoo\n'
+    verify_invoke_from_clirunner(result, 'Stargazers:\nbar\nfoo\n')
 
 
 @pytest.fixture
@@ -81,8 +85,7 @@ def test_get_all_stargazers_on_invalid_user_repo(url_page_content: str,
     )
     runner = CliRunner()
     result = runner.invoke(command_line, [invalid_user_and_repo])
-    assert result.exit_code == 0
-    assert result.output == http_not_found
+    verify_invoke_from_clirunner(result, http_not_found)
 
 
 @pytest.fixture
@@ -102,8 +105,7 @@ def test_get_all_stargazers_on_too_many_requests(url_page_content: str,
     )
     runner = CliRunner()
     result = runner.invoke(command_line, ['foo/bar'])
-    assert result.exit_code == 0
-    assert result.output == http_too_many_requests
+    verify_invoke_from_clirunner(result, http_too_many_requests)
 
 
 @responses.activate
@@ -118,8 +120,7 @@ def test_is_stargazer(url_page_content: str,
     )
     runner = CliRunner()
     result = runner.invoke(command_line, ['foo/bar', '--user', 'foo'])
-    assert result.exit_code == 0
-    assert result.output == stargazer
+    verify_invoke_from_clirunner(result, stargazer)
 
 
 @responses.activate
@@ -134,8 +135,7 @@ def test_not_a_stargazer(url_page_content: str,
     )
     runner = CliRunner()
     result = runner.invoke(command_line, ['foo/bar', '--user', 'another_foo'])
-    assert result.exit_code == 0
-    assert result.output == not_a_stargazer
+    verify_invoke_from_clirunner(result, not_a_stargazer)
 
 
 @responses.activate
@@ -150,8 +150,7 @@ def test_stargazer_on_invalid_page(url_page_content: str,
     )
     runner = CliRunner()
     result = runner.invoke(command_line, ['foo/bar', '--user', 'foo'])
-    assert result.exit_code == 0
-    assert result.output == http_not_found
+    verify_invoke_from_clirunner(result, http_not_found)
 
 
 @responses.activate
@@ -166,5 +165,4 @@ def test_stargazer_on_too_many_requests_page(url_page_content: str,
     )
     runner = CliRunner()
     result = runner.invoke(command_line, ['foo/bar', '--user', 'foo'])
-    assert result.exit_code == 0
-    assert result.output == http_too_many_requests
+    verify_invoke_from_clirunner(result, http_too_many_requests)
