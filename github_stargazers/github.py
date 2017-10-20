@@ -17,6 +17,11 @@ class TooManyRequestsHttpError(Exception):
         super().__init__("Too many requests.")
 
 
+class UrlNotFoundError(Exception):
+    def __init__(self, repository) -> None:
+        super().__init__(f"Resource not Found. Check that the repository {repository or ''} is correct.")
+
+
 class HTTPError(Exception):
 
     def __init__(self, status_code: int) -> None:
@@ -33,9 +38,11 @@ class GitHub:
     __GITHUB_URL: str = "https://github.com"
     __STARGAZERS_URL_SUFFIX: str = "/stargazers"
     __PAGE_SUFFIX: str = "?page="
+    __MARK_END_OF_STARGAZERS: typing.List[str] = ['This repository has no more stargazers.']
+
     __OK_STATUS_CODE: int = 200
     __TOO_MANY_REQUESTS_STATUS_CODE: int = 429
-    __MARK_END_OF_STARGAZERS: typing.List[str] = ['This repository has no more stargazers.']
+    __NOT_FOUND_STATUS_CODE: int = 404
 
     def __init__(self, username_and_repository: str) -> None:
         self.__username, self.__repository = GitHub.__extract_user_and_repo(username_and_repository)
@@ -64,6 +71,8 @@ class GitHub:
             return BeautifulSoup(response.text, "html.parser")
         if status_code == self.__TOO_MANY_REQUESTS_STATUS_CODE:
             raise TooManyRequestsHttpError()
+        if status_code == self.__NOT_FOUND_STATUS_CODE:
+            raise UrlNotFoundError(os.path.join(self.__username, self.__repository))
         raise HTTPError(status_code)
 
     def __extract_stargazers_from_url(self, url: str) -> typing.List[str]:
