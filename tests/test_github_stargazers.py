@@ -57,8 +57,8 @@ def test_wrong_arguments(wrong_arguments_message: str) -> None:
 
 
 @responses.activate
-def test_user_and_repository(url_page_content: str,
-                             http_ok_status_code: int) -> None:
+def test_user_and_repository_shows_sorted_stargazers(url_page_content: str,
+                                                     http_ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
