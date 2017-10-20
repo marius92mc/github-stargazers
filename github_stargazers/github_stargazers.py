@@ -30,6 +30,7 @@ class _Command:  # pylint: disable=too-few-public-methods
             Halo().fail(exception_message)
             return None
         if not stargazers:
+            print("0 stargazers.")
             return None
         print("Stargazers:")
         for stargazer in stargazers:

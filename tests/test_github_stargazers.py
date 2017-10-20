@@ -14,6 +14,11 @@ def url_page_content() -> str:
 
 
 @pytest.fixture
+def url_page_content_without_stargazers() -> str:
+    return "<html> <h1> title </h1> </html>"
+
+
+@pytest.fixture
 def halo_succeed() -> str:
     return "\r\x1b[K\x1b[32m✔\x1b[39m "
 
@@ -62,6 +67,19 @@ def test_user_and_repository(url_page_content: str,
     )
     result = CliRunner().invoke(command_line, ['foo/bar'])
     verify_invoke_from_clirunner(result, 'Stargazers:\nbar\nfoo\n')
+
+
+@responses.activate
+def test_get_all_stargazers_shows_message_on_page_without_stargazers(url_page_content_without_stargazers: str,
+                                                                     http_ok_status_code: int) -> None:
+    responses.add(
+        responses.GET,
+        "https://github.com/foo/baz/stargazers?page=1",
+        body=url_page_content_without_stargazers,
+        status=http_ok_status_code
+    )
+    result = CliRunner().invoke(command_line, ['foo/baz'])
+    verify_invoke_from_clirunner(result, "0 stargazers.\n")
 
 
 @pytest.fixture
