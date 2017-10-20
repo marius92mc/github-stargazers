@@ -4,7 +4,7 @@ import click
 from halo import Halo
 
 from github_stargazers.github import GitHub
-from github_stargazers.github import UsernameRepositoryError, TooManyRequestsHttpError, HTTPError
+from github_stargazers.github import UsernameRepositoryError, TooManyRequestsHttpError, HTTPError, UrlNotFoundError
 
 
 class _Command:  # pylint: disable=too-few-public-methods
@@ -16,7 +16,7 @@ class _Command:  # pylint: disable=too-few-public-methods
     def __get_github(self) -> typing.Optional[GitHub]:
         try:
             github = GitHub(self.__username_and_repository)
-        except UsernameRepositoryError as exception_message:
+        except (UsernameRepositoryError, UrlNotFoundError) as exception_message:
             Halo().fail(exception_message)
             return None
         return github
@@ -26,7 +26,7 @@ class _Command:  # pylint: disable=too-few-public-methods
         assert github, "github cannot be None"
         try:
             stargazers: typing.List[str] = github.get_all_stargazers()
-        except (TooManyRequestsHttpError, HTTPError) as exception_message:
+        except (TooManyRequestsHttpError, HTTPError, UrlNotFoundError) as exception_message:
             Halo().fail(exception_message)
             return None
         if not stargazers:
@@ -39,7 +39,7 @@ class _Command:  # pylint: disable=too-few-public-methods
     def __print_check_stargazer(self, github: GitHub) -> None:
         try:
             stargazer: bool = github.is_stargazer(self.__user)
-        except (TooManyRequestsHttpError, HTTPError) as exception_message:
+        except (TooManyRequestsHttpError, HTTPError, UrlNotFoundError) as exception_message:
             Halo().fail(exception_message)
             return None
         if stargazer:

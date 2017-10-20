@@ -3,7 +3,7 @@ import pytest
 import responses
 
 from github_stargazers.github import GitHub
-from github_stargazers.github import UsernameRepositoryError, TooManyRequestsHttpError, HTTPError
+from github_stargazers.github import UsernameRepositoryError, TooManyRequestsHttpError, UrlNotFoundError
 from tests import get_examples_invalid_user_repo
 
 
@@ -95,7 +95,7 @@ def test_get_all_stargazers_on_invalid_user_repo_raises(url_page_content_1: str,
         body=url_page_content_1,
         status=http_not_found_status_code
     )
-    with pytest.raises(HTTPError):
+    with pytest.raises(UrlNotFoundError):
         GitHub(invalid_user_and_repo).get_all_stargazers()
 
 
@@ -173,7 +173,7 @@ def test_provided_user_on_invalid_page(url_page_content_1: str, http_not_found_s
         body=url_page_content_1,
         status=http_not_found_status_code
     )
-    with pytest.raises(HTTPError):
+    with pytest.raises(UrlNotFoundError):
         GitHub("foo/bar").is_stargazer("foo")
 
 
