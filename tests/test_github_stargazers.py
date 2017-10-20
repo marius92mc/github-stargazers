@@ -82,25 +82,24 @@ def test_get_all_stargazers_shows_message_on_page_without_stargazers(url_page_co
     verify_invoke_from_clirunner(result, "0 stargazers.\n")
 
 
-@pytest.fixture
-def http_not_found(halo_fail: str, http_not_found_status_code: int) -> str:
-    return halo_fail + str(http_not_found_status_code) + " HTTP.\n"
+def http_not_found(repository: str) -> str:
+    return halo_fail() + "Resource not Found. Check that the repository " + repository + " is correct.\n"
 
 
 @pytest.mark.parametrize("invalid_user_and_repo", get_examples_invalid_user_repo())
 @responses.activate
 def test_get_all_stargazers_on_invalid_user_repo(url_page_content: str,
                                                  invalid_user_and_repo: str,
-                                                 http_not_found_status_code: int,
-                                                 http_not_found: str) -> None:
+                                                 http_not_found_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/" + invalid_user_and_repo + "/stargazers?page=1",
         body=url_page_content,
         status=http_not_found_status_code
     )
+
     result = CliRunner().invoke(command_line, [invalid_user_and_repo])
-    verify_invoke_from_clirunner(result, http_not_found)
+    verify_invoke_from_clirunner(result, http_not_found(invalid_user_and_repo))
 
 
 @pytest.fixture
@@ -152,7 +151,6 @@ def test_not_a_stargazer(url_page_content: str,
 
 @responses.activate
 def test_stargazer_on_invalid_page(url_page_content: str,
-                                   http_not_found: str,
                                    http_not_found_status_code: int) -> None:
     responses.add(
         responses.GET,
@@ -161,7 +159,7 @@ def test_stargazer_on_invalid_page(url_page_content: str,
         status=http_not_found_status_code
     )
     result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
-    verify_invoke_from_clirunner(result, http_not_found)
+    verify_invoke_from_clirunner(result, http_not_found("foo/bar"))
 
 
 @responses.activate
