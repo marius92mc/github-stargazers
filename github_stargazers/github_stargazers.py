@@ -1,10 +1,25 @@
 import typing
-
 import click
+
 from halo import Halo
 
 from github_stargazers.github import GitHub
-from github_stargazers.github import UsernameRepositoryError, TooManyRequestsHttpError, HTTPError, UrlNotFoundError
+from github_stargazers.github import UsernameRepositoryError, TooManyRequestsHttpError, UrlNotFoundError
+
+
+class _OutputPrintable(object):
+    @staticmethod
+    def print_stargazers(stargazers: typing.List[str]) -> None:
+        if not stargazers:
+            print("0 stargazers.")
+            return None
+        print("Stargazers:")
+        for stargazer in stargazers:
+            print(stargazer)
+
+    @staticmethod
+    def print_check_stargazer(is_stargazer: bool) -> None:
+        return Halo().succeed("Stargazer") if is_stargazer else Halo().fail("Not a Stargazer")
 
 
 class _Command:  # pylint: disable=too-few-public-methods
@@ -21,40 +36,20 @@ class _Command:  # pylint: disable=too-few-public-methods
             return None
         return github
 
-    @classmethod
-    def __print_stargazers(cls, github: GitHub) -> None:
-        assert github, "github cannot be None"
-        try:
-            stargazers: typing.List[str] = github.get_all_stargazers()
-        except (TooManyRequestsHttpError, HTTPError, UrlNotFoundError) as exception_message:
-            Halo().fail(exception_message)
-            return None
-        if not stargazers:
-            print("0 stargazers.")
-            return None
-        print("Stargazers:")
-        for stargazer in stargazers:
-            print(stargazer)
-
-    def __print_check_stargazer(self, github: GitHub) -> None:
-        try:
-            stargazer: bool = github.is_stargazer(self.__user)
-        except (TooManyRequestsHttpError, HTTPError, UrlNotFoundError) as exception_message:
-            Halo().fail(exception_message)
-            return None
-        if stargazer:
-            Halo().succeed("Stargazer")
-        else:
-            Halo().fail("Not a Stargazer")
-
     def process(self) -> None:
-        github: GitHub = self.__get_github()
+        github = self.__get_github()
         if not github:
             return
-        if not self.__user:
-            _Command.__print_stargazers(github)
-        else:
-            self.__print_check_stargazer(github)
+        try:
+            if self.__user:
+                stargazer: bool = github.is_stargazer(self.__user)
+                _OutputPrintable.print_check_stargazer(stargazer)
+            else:
+                stargazers: typing.List[str] = github.get_all_stargazers()
+                _OutputPrintable.print_stargazers(stargazers)
+        except (TooManyRequestsHttpError, UrlNotFoundError) as exception_message:
+            Halo().fail(exception_message)
+            return None
 
 
 @click.command()
