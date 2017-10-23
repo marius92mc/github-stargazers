@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import requests
 
 
-class UsernameRepositoryError(Exception):
+class UsernameRepositoryError(ValueError):
 
     def __init__(self) -> None:
         super().__init__("Argument should be of form username/repository.")
