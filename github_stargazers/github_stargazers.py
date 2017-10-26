@@ -37,9 +37,9 @@ class _Command:  # pylint: disable=too-few-public-methods
         return github
 
     def process(self) -> None:
-        github = self.__get_github()
+        github: typing.Optional[GitHub] = self.__get_github()
         if not github:
-            return
+            return None
         try:
             if self.__user:
                 stargazer: bool = github.is_stargazer(self.__user)

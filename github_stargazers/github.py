@@ -76,7 +76,7 @@ class GitHub:
         raise HTTPError(status_code)
 
     def __extract_stargazers_from_url(self, url: str) -> typing.List[str]:
-        soup = self.__get_soup(url)
+        soup: typing.Optional[BeautifulSoup] = self.__get_soup(url)
         h3_components = soup.find_all('h3')
 
         users: typing.List[str] = []
