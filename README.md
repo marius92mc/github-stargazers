@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/marius92mc/github-stargazers.svg?branch=master)](https://travis-ci.org/marius92mc/github-stargazers)
 [![PyPI version](https://badge.fury.io/py/github-stargazers.svg)](https://badge.fury.io/py/github-stargazers)
+[![HitCount](http://hits.dwyl.io/marius92mc/github-stargazers.svg)](http://hits.dwyl.io/marius92mc/github-stargazers)
 
 List stargazers and check if a user starred that repository.
 
