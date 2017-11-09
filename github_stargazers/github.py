@@ -18,7 +18,8 @@ class TooManyRequestsHttpError(Exception):
 
 
 class UrlNotFoundError(Exception):
-    def __init__(self, repository) -> None:
+
+    def __init__(self, repository: str) -> None:
         super().__init__(f"Resource not Found. Check that the repository {repository or ''} is correct.")
 
 
