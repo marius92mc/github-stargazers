@@ -4,7 +4,7 @@ from setuptools import setup
 
 
 def get_version():
-    return '0.0.4'
+    return '0.0.5'
 
 
 def get_long_description():
