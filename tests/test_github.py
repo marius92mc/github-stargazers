@@ -4,6 +4,7 @@ import responses
 
 from github_stargazers.github import GitHub
 from github_stargazers.github import UsernameRepositoryError, TooManyRequestsHttpError, UrlNotFoundError
+from github_stargazers.github import MissingHyperlinkTagError, MissingHrefAttributeError
 from tests import get_examples_invalid_user_repo
 
 
@@ -16,12 +17,14 @@ def test_wrong_argument_raises() -> None:
 
 @pytest.fixture
 def url_page_content_1() -> str:
-    return "<h3>foo</h3> <h3>bar</h3>"
+    return '<h3> <a href="/foo"> John Williams </a> </h3> ' \
+           '<h3> <a href="/bar"> Michael Phelps </a> </h3>'
 
 
 @pytest.fixture
 def url_page_content_2() -> str:
-    return "<h3>foo2</h3> <h3>bar2</h3>"
+    return '<h3> <a href="/foo2"> John Williams 2 </a> </h3> ' \
+           '<h3> <a href="/bar2"> Michael Phelps 2 </a> </h3>'
 
 
 @responses.activate
@@ -187,4 +190,30 @@ def test_provided_user_on_too_many_requests_page(url_page_content_1: str,
         status=http_too_many_requests_status_code
     )
     with pytest.raises(TooManyRequestsHttpError):
+        GitHub("foo/bar").is_stargazer("foo")
+
+
+@responses.activate
+def test_provided_user_with_missing_hyperlink_tag(url_page_content_missing_hyperlink_tag: str,
+                                                  http_ok_status_code: int) -> None:
+    responses.add(
+        responses.GET,
+        "https://github.com/foo/bar/stargazers?page=1",
+        body=url_page_content_missing_hyperlink_tag,
+        status=http_ok_status_code
+    )
+    with pytest.raises(MissingHyperlinkTagError):
+        GitHub("foo/bar").is_stargazer("foo")
+
+
+@responses.activate
+def test_provided_user_with_missing_href_attribute(url_page_content_missing_href_attribute: str,
+                                                   http_ok_status_code: int) -> None:
+    responses.add(
+        responses.GET,
+        "https://github.com/foo/bar/stargazers?page=1",
+        body=url_page_content_missing_href_attribute,
+        status=http_ok_status_code
+    )
+    with pytest.raises(MissingHrefAttributeError):
         GitHub("foo/bar").is_stargazer("foo")
