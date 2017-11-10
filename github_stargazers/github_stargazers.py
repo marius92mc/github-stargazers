@@ -5,6 +5,7 @@ from halo import Halo
 
 from github_stargazers.github import GitHub
 from github_stargazers.github import UsernameRepositoryError, TooManyRequestsHttpError, UrlNotFoundError
+from github_stargazers.github import MissingHyperlinkTagError, MissingHrefAttributeError
 
 
 class _OutputPrintable(object):
@@ -47,7 +48,8 @@ class _Command:  # pylint: disable=too-few-public-methods
             else:
                 stargazers: typing.List[str] = github.get_all_stargazers()
                 _OutputPrintable.print_stargazers(stargazers)
-        except (TooManyRequestsHttpError, UrlNotFoundError) as exception_message:
+        except (TooManyRequestsHttpError, UrlNotFoundError,
+                MissingHyperlinkTagError, MissingHrefAttributeError) as exception_message:
             Halo().fail(exception_message)
             return None
 

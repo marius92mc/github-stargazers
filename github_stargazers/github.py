@@ -2,6 +2,7 @@ import typing
 import os
 
 from bs4 import BeautifulSoup
+from bs4.element import Tag
 import requests
 
 
@@ -29,6 +30,18 @@ class HTTPError(Exception):
         super().__init__("{} HTTP.".format(status_code))
 
 
+class MissingHyperlinkTagError(Exception):
+
+    def __init__(self) -> None:
+        super().__init__("Missing hyperlink tag.")
+
+
+class MissingHrefAttributeError(Exception):
+
+    def __init__(self) -> None:
+        super().__init__("Missing 'href' attribute from hyperlink tag.")
+
+
 class GitHub:
     """Creates a GitHub instance for listing the stargazers of a given repository
     and checking if a user's full name is in the list of stargazers.
@@ -39,7 +52,7 @@ class GitHub:
     __GITHUB_URL: str = "https://github.com"
     __STARGAZERS_URL_SUFFIX: str = "/stargazers"
     __PAGE_SUFFIX: str = "?page="
-    __MARK_END_OF_STARGAZERS: typing.List[str] = ['This repository has no more stargazers.']
+    __MARK_END_OF_STARGAZERS: str = 'This repository has no more stargazers.'
 
     __OK_STATUS_CODE: int = 200
     __TOO_MANY_REQUESTS_STATUS_CODE: int = 429
@@ -80,12 +93,26 @@ class GitHub:
         soup: typing.Optional[BeautifulSoup] = self.__get_soup(url)
         h3_components = soup.find_all('h3')
 
+        def _check_hyperlink_component(component: Tag) -> None:
+            hyperlink_component: typing.Optional[Tag] = component.find('a')
+            if not hyperlink_component:
+                raise MissingHyperlinkTagError()
+            if not hyperlink_component.get('href'):
+                raise MissingHrefAttributeError()
+
+        def _extract_username_from_h3(component: Tag) -> typing.Optional[str]:
+            if component.get_text() == self.__MARK_END_OF_STARGAZERS:
+                return None
+            _check_hyperlink_component(component)
+            return component.a['href'][1:]  # dropping the first '/' character
+
         users: typing.List[str] = []
         for component in h3_components:
-            users.append(component.get_text())
+            username: typing.Optional[str] = _extract_username_from_h3(component)
+            if not username:
+                break
+            users.append(username)
 
-        if users == self.__MARK_END_OF_STARGAZERS:
-            return []
         return users
 
     def __get_url_page_template(self, page_number: int) -> str:

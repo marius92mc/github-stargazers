@@ -10,7 +10,8 @@ from tests import get_examples_invalid_user_repo
 
 @pytest.fixture
 def url_page_content() -> str:
-    return "<h3>foo</h3> <h3>bar</h3>"
+    return '<h3> <a href="/foo"> John Williams </a> </h3> ' \
+           '<h3> <a href="/bar"> Michael Phelps </a> </h3>'
 
 
 @pytest.fixture
@@ -174,3 +175,41 @@ def test_stargazer_on_too_many_requests_page(url_page_content: str,
     )
     result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
     verify_invoke_from_clirunner(result, http_too_many_requests)
+
+
+@pytest.fixture
+def missing_hyperlink_tag(halo_fail: str) -> str:
+    return halo_fail + "Missing hyperlink tag.\n"
+
+
+@responses.activate
+def test_stargazer_on_missing_hyperlink_tag(url_page_content_missing_hyperlink_tag: str,
+                                            http_ok_status_code: int,
+                                            missing_hyperlink_tag: str) -> None:
+    responses.add(
+        responses.GET,
+        "https://github.com/foo/bar/stargazers?page=1",
+        body=url_page_content_missing_hyperlink_tag,
+        status=http_ok_status_code
+    )
+    result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
+    verify_invoke_from_clirunner(result, missing_hyperlink_tag)
+
+
+@pytest.fixture
+def missing_href_attribute(halo_fail: str) -> str:
+    return halo_fail + "Missing 'href' attribute from hyperlink tag.\n"
+
+
+@responses.activate
+def test_stargazer_on_missing_href_attribute(url_page_content_missing_href_attribute: str,
+                                             http_ok_status_code: int,
+                                             missing_href_attribute: str) -> None:
+    responses.add(
+        responses.GET,
+        "https://github.com/foo/bar/stargazers?page=1",
+        body=url_page_content_missing_href_attribute,
+        status=http_ok_status_code
+    )
+    result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
+    verify_invoke_from_clirunner(result, missing_href_attribute)

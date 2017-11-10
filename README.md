@@ -29,8 +29,7 @@ $ pipenv run github-stargazers <username>/<repository> [OPTIONS]
 ```
 where `OPTIONS` could be
 ```
---user <username>  User name to see if it is a stargazer. 
-                   username represents the GitHub name.
+--user <username>  GitHub username to see if it is a stargazer. 
 ```
 If it's used without `--user`, it just shows repository's stargazers.
 
@@ -49,7 +48,7 @@ from github_stargazers.github import GitHub
 github = GitHub("yasoob/fb-messenger-bot")
 
 print(github.get_all_stargazers())
-print(github.is_stargazer("Robin"))
+print(github.is_stargazer("Jazzthedog"))
 ```
 
 ## Running from source
@@ -87,8 +86,7 @@ $ pipenv run github-stargazers <username>/<repository> [OPTIONS]
 ```
 where `OPTIONS` could be 
 ```
---user <username>  User name to see if it is a stargazer, 
-                   where username represents the GitHub name. 
+--user <username>  GitHub username to see if it is a stargazer. 
 ```
 
 ### Run autopep8, mypy, pylint for the changed files 
