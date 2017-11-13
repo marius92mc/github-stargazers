@@ -101,6 +101,19 @@ class GitHub:
         h3_components: element.ResultSet = soup.find_all('h3')
 
         def _check_hyperlink_component(component: element.Tag) -> None:
+            """Check the BeautifulSoup `element.Tag` component that receives a hyperlink HTML tag.
+
+            The expected structure is as follows:
+            '<h3> <a href="/foo"> John Williams </a> </h3>'
+            It incrementally dives into the component one tag or attribute of a tag at a time, making sure they appear:
+            - the hyperlink tag: <a>
+            - the `href` attribute: <a href="..."> </a>
+            - the content of hyperlink's `href` attribute.
+            The href content contains the GitHub username prefixed by the '/' character, with the following form:
+            `/username`.
+
+            If any of the above mentioned is missing or not in the expected form, an Exception is raised.
+            """
             hyperlink_component: typing.Optional[element.Tag] = component.find('a')
             if not hyperlink_component:
                 raise MissingHyperlinkTagError()
