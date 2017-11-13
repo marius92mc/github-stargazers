@@ -1,5 +1,6 @@
 import typing
 import os
+import re
 
 from bs4 import BeautifulSoup
 from bs4 import element
@@ -40,6 +41,12 @@ class MissingHrefAttributeError(Exception):
 
     def __init__(self) -> None:
         super().__init__("Missing 'href' attribute from hyperlink tag.")
+
+
+class HrefContentError(Exception):
+
+    def __init__(self, href_content: str) -> None:
+        super().__init__(f"Wrong 'href' content: '{href_content}'. It should be of form /username.")
 
 
 class GitHub:
@@ -99,6 +106,9 @@ class GitHub:
                 raise MissingHyperlinkTagError()
             if not hyperlink_component.get('href'):
                 raise MissingHrefAttributeError()
+            href_content: str = hyperlink_component['href']
+            if not re.match(r"/.+$", href_content):
+                raise HrefContentError(href_content)
 
         def _extract_username_from_h3(component: element.Tag) -> typing.Optional[str]:
             if component.get_text() == self.__MARK_END_OF_STARGAZERS:

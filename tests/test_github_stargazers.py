@@ -5,7 +5,7 @@ import pytest
 import responses
 
 from github_stargazers.github_stargazers import command_line
-from tests import get_examples_invalid_user_repo
+from tests import get_examples_invalid_user_repo, get_wrong_href_content, get_page_content_with_href
 
 
 @pytest.fixture
@@ -213,3 +213,22 @@ def test_stargazer_on_missing_href_attribute(url_page_content_missing_href_attri
     )
     result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
     verify_invoke_from_clirunner(result, missing_href_attribute)
+
+
+def wrong_href(halo_fail: str, href_content: str) -> str:
+    return halo_fail + f"Wrong 'href' content: '{href_content}'. It should be of form /username.\n"
+
+
+@pytest.mark.parametrize("wrong_href_content", get_wrong_href_content())
+@responses.activate
+def test_wrong_href_content(wrong_href_content: str,
+                            http_ok_status_code: int,
+                            halo_fail: str) -> None:
+    responses.add(
+        responses.GET,
+        "https://github.com/foo/bar/stargazers?page=1",
+        body=get_page_content_with_href(wrong_href_content),
+        status=http_ok_status_code
+    )
+    result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
+    verify_invoke_from_clirunner(result, wrong_href(halo_fail, wrong_href_content))
