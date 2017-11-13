@@ -2,7 +2,7 @@ import typing
 import os
 
 from bs4 import BeautifulSoup
-from bs4.element import Tag
+from bs4 import element
 import requests
 
 
@@ -78,7 +78,7 @@ class GitHub:
         return os.path.join(self.__GITHUB_URL, self.__username, self.__repository)
 
     def __get_soup(self, url: str) -> typing.Optional[BeautifulSoup]:
-        response = requests.get(url)
+        response: requests.Response = requests.get(url)
 
         status_code: int = response.status_code
         if status_code == self.__OK_STATUS_CODE:
@@ -91,16 +91,16 @@ class GitHub:
 
     def __extract_stargazers_from_url(self, url: str) -> typing.List[str]:
         soup: typing.Optional[BeautifulSoup] = self.__get_soup(url)
-        h3_components = soup.find_all('h3')
+        h3_components: element.ResultSet = soup.find_all('h3')
 
-        def _check_hyperlink_component(component: Tag) -> None:
-            hyperlink_component: typing.Optional[Tag] = component.find('a')
+        def _check_hyperlink_component(component: element.Tag) -> None:
+            hyperlink_component: typing.Optional[element.Tag] = component.find('a')
             if not hyperlink_component:
                 raise MissingHyperlinkTagError()
             if not hyperlink_component.get('href'):
                 raise MissingHrefAttributeError()
 
-        def _extract_username_from_h3(component: Tag) -> typing.Optional[str]:
+        def _extract_username_from_h3(component: element.Tag) -> typing.Optional[str]:
             if component.get_text() == self.__MARK_END_OF_STARGAZERS:
                 return None
             _check_hyperlink_component(component)
