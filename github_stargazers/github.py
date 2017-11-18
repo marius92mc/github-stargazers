@@ -1,5 +1,6 @@
 import typing
 import os
+import re
 
 from bs4 import BeautifulSoup
 from bs4 import element
@@ -40,6 +41,12 @@ class MissingHrefAttributeError(Exception):
 
     def __init__(self) -> None:
         super().__init__("Missing 'href' attribute from hyperlink tag.")
+
+
+class HrefContentError(Exception):
+
+    def __init__(self, href_content: str) -> None:
+        super().__init__(f"Wrong 'href' content: '{href_content}'. It should be of form /username.")
 
 
 class GitHub:
@@ -94,11 +101,27 @@ class GitHub:
         h3_components: element.ResultSet = soup.find_all('h3')
 
         def _check_hyperlink_component(component: element.Tag) -> None:
+            """Check the BeautifulSoup `element.Tag` component that receives a hyperlink HTML tag.
+
+            The expected structure is as follows:
+            '<h3> <a href="/foo"> John Williams </a> </h3>'
+            It incrementally dives into the component one tag or attribute of a tag at a time, making sure they appear:
+            - the hyperlink tag: <a>
+            - the `href` attribute: <a href="..."> </a>
+            - the content of hyperlink's `href` attribute.
+            The href content contains the GitHub username prefixed by the '/' character, with the following form:
+            `/username`.
+
+            If any of the above mentioned is missing or not in the expected form, an Exception is raised.
+            """
             hyperlink_component: typing.Optional[element.Tag] = component.find('a')
             if not hyperlink_component:
                 raise MissingHyperlinkTagError()
             if not hyperlink_component.get('href'):
                 raise MissingHrefAttributeError()
+            href_content: str = hyperlink_component['href']
+            if not re.match(r"/.+$", href_content):
+                raise HrefContentError(href_content)
 
         def _extract_username_from_h3(component: element.Tag) -> typing.Optional[str]:
             if component.get_text() == self.__MARK_END_OF_STARGAZERS:

@@ -4,8 +4,8 @@ import responses
 
 from github_stargazers.github import GitHub
 from github_stargazers.github import UsernameRepositoryError, TooManyRequestsHttpError, UrlNotFoundError
-from github_stargazers.github import MissingHyperlinkTagError, MissingHrefAttributeError
-from tests import get_examples_invalid_user_repo
+from github_stargazers.github import MissingHyperlinkTagError, MissingHrefAttributeError, HrefContentError
+from tests import get_examples_invalid_user_repo, get_wrong_href_content, get_page_content_with_href
 
 
 def test_wrong_argument_raises() -> None:
@@ -216,4 +216,18 @@ def test_provided_user_with_missing_href_attribute(url_page_content_missing_href
         status=http_ok_status_code
     )
     with pytest.raises(MissingHrefAttributeError):
+        GitHub("foo/bar").is_stargazer("foo")
+
+
+@pytest.mark.parametrize("wrong_href_content", get_wrong_href_content())
+@responses.activate
+def test_wrong_href_content_raises(wrong_href_content: str,
+                                   http_ok_status_code: int) -> None:
+    responses.add(
+        responses.GET,
+        "https://github.com/foo/bar/stargazers?page=1",
+        body=get_page_content_with_href(wrong_href_content),
+        status=http_ok_status_code
+    )
+    with pytest.raises(HrefContentError):
         GitHub("foo/bar").is_stargazer("foo")
