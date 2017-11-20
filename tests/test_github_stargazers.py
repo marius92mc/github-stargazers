@@ -59,12 +59,12 @@ def test_wrong_arguments(wrong_arguments_message: str) -> None:
 
 @responses.activate
 def test_user_and_repository_shows_sorted_stargazers(url_page_content: str,
-                                                     http_ok_status_code: int) -> None:
+                                                     ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content,
-        status=http_ok_status_code
+        status=ok_status_code
     )
     result = CliRunner().invoke(command_line, ['foo/bar'])
     verify_invoke_from_clirunner(result, 'Stargazers:\nbar\nfoo\n')
@@ -72,12 +72,12 @@ def test_user_and_repository_shows_sorted_stargazers(url_page_content: str,
 
 @responses.activate
 def test_get_all_stargazers_shows_message_on_page_without_stargazers(url_page_content_without_stargazers: str,
-                                                                     http_ok_status_code: int) -> None:
+                                                                     ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/baz/stargazers?page=1",
         body=url_page_content_without_stargazers,
-        status=http_ok_status_code
+        status=ok_status_code
     )
     result = CliRunner().invoke(command_line, ['foo/baz'])
     verify_invoke_from_clirunner(result, "0 stargazers.\n")
@@ -91,12 +91,12 @@ def http_not_found(repository: str) -> str:
 @responses.activate
 def test_get_all_stargazers_on_invalid_user_repo(url_page_content: str,
                                                  invalid_user_and_repo: str,
-                                                 http_not_found_status_code: int) -> None:
+                                                 not_found_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/" + invalid_user_and_repo + "/stargazers?page=1",
         body=url_page_content,
-        status=http_not_found_status_code
+        status=not_found_status_code
     )
 
     result = CliRunner().invoke(command_line, [invalid_user_and_repo])
@@ -110,13 +110,13 @@ def http_too_many_requests(halo_fail: str) -> str:
 
 @responses.activate
 def test_get_all_stargazers_on_too_many_requests(url_page_content: str,
-                                                 http_too_many_requests_status_code: int,
+                                                 too_many_requests_status_code: int,
                                                  http_too_many_requests: str) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content,
-        status=http_too_many_requests_status_code
+        status=too_many_requests_status_code
     )
     result = CliRunner().invoke(command_line, ['foo/bar'])
     verify_invoke_from_clirunner(result, http_too_many_requests)
@@ -125,12 +125,12 @@ def test_get_all_stargazers_on_too_many_requests(url_page_content: str,
 @responses.activate
 def test_is_stargazer(url_page_content: str,
                       stargazer: str,
-                      http_ok_status_code: int) -> None:
+                      ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content,
-        status=http_ok_status_code
+        status=ok_status_code
     )
     result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
     verify_invoke_from_clirunner(result, stargazer)
@@ -139,12 +139,12 @@ def test_is_stargazer(url_page_content: str,
 @responses.activate
 def test_not_a_stargazer(url_page_content: str,
                          not_a_stargazer: str,
-                         http_ok_status_code: int) -> None:
+                         ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content,
-        status=http_ok_status_code
+        status=ok_status_code
     )
     result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'another_foo'])
     verify_invoke_from_clirunner(result, not_a_stargazer)
@@ -152,12 +152,12 @@ def test_not_a_stargazer(url_page_content: str,
 
 @responses.activate
 def test_stargazer_on_invalid_page(url_page_content: str,
-                                   http_not_found_status_code: int) -> None:
+                                   not_found_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content,
-        status=http_not_found_status_code
+        status=not_found_status_code
     )
     result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
     verify_invoke_from_clirunner(result, http_not_found("foo/bar"))
@@ -165,13 +165,13 @@ def test_stargazer_on_invalid_page(url_page_content: str,
 
 @responses.activate
 def test_stargazer_on_too_many_requests_page(url_page_content: str,
-                                             http_too_many_requests_status_code: int,
+                                             too_many_requests_status_code: int,
                                              http_too_many_requests: str) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content,
-        status=http_too_many_requests_status_code
+        status=too_many_requests_status_code
     )
     result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
     verify_invoke_from_clirunner(result, http_too_many_requests)
@@ -183,14 +183,14 @@ def missing_hyperlink_tag(halo_fail: str) -> str:
 
 
 @responses.activate
-def test_stargazer_on_missing_hyperlink_tag(url_page_content_missing_hyperlink_tag: str,
-                                            http_ok_status_code: int,
+def test_stargazer_on_missing_hyperlink_tag(url_page_content_no_hyperlink: str,
+                                            ok_status_code: int,
                                             missing_hyperlink_tag: str) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
-        body=url_page_content_missing_hyperlink_tag,
-        status=http_ok_status_code
+        body=url_page_content_no_hyperlink,
+        status=ok_status_code
     )
     result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
     verify_invoke_from_clirunner(result, missing_hyperlink_tag)
@@ -202,14 +202,14 @@ def missing_href_attribute(halo_fail: str) -> str:
 
 
 @responses.activate
-def test_stargazer_on_missing_href_attribute(url_page_content_missing_href_attribute: str,
-                                             http_ok_status_code: int,
+def test_stargazer_on_missing_href_attribute(url_page_content_no_href: str,
+                                             ok_status_code: int,
                                              missing_href_attribute: str) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
-        body=url_page_content_missing_href_attribute,
-        status=http_ok_status_code
+        body=url_page_content_no_href,
+        status=ok_status_code
     )
     result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
     verify_invoke_from_clirunner(result, missing_href_attribute)
@@ -222,13 +222,13 @@ def wrong_href(halo_fail: str, href_content: str) -> str:
 @pytest.mark.parametrize("wrong_href_content", get_wrong_href_content())
 @responses.activate
 def test_wrong_href_content(wrong_href_content: str,
-                            http_ok_status_code: int,
+                            ok_status_code: int,
                             halo_fail: str) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=get_page_content_with_href(wrong_href_content),
-        status=http_ok_status_code
+        status=ok_status_code
     )
     result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
     verify_invoke_from_clirunner(result, wrong_href(halo_fail, wrong_href_content))

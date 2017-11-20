@@ -29,24 +29,24 @@ def url_page_content_2() -> str:
 
 @responses.activate
 def test_get_all_stargazers_has_all_stargazers(url_page_content_1: str,
-                                               http_ok_status_code: int) -> None:
+                                               ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content_1,
-        status=http_ok_status_code
+        status=ok_status_code
     )
     assert set(GitHub("foo/bar").get_all_stargazers()) == set(['foo', 'bar'])
 
 
 @responses.activate
 def test_get_all_stargazers_sorts_stargazers(url_page_content_1: str,
-                                             http_ok_status_code: int) -> None:
+                                             ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content_1,
-        status=http_ok_status_code
+        status=ok_status_code
     )
     assert GitHub("foo/bar").get_all_stargazers() == sorted(['foo', 'bar'])
 
@@ -58,12 +58,12 @@ def url_page_content_without_stargazers() -> str:
 
 @responses.activate
 def test_get_all_stargazers_returns_empty_on_page_without_stargazers(url_page_content_without_stargazers: str,
-                                                                     http_ok_status_code: int) -> None:
+                                                                     ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content_without_stargazers,
-        status=http_ok_status_code
+        status=ok_status_code
     )
     assert GitHub("foo/bar").get_all_stargazers() == []
 
@@ -71,18 +71,18 @@ def test_get_all_stargazers_returns_empty_on_page_without_stargazers(url_page_co
 @responses.activate
 def test_get_all_stargazers_sorts_stargazers_two_pages(url_page_content_1: str,
                                                        url_page_content_2: str,
-                                                       http_ok_status_code: int) -> None:
+                                                       ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content_1,
-        status=http_ok_status_code
+        status=ok_status_code
     )
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=2",
         body=url_page_content_2,
-        status=http_ok_status_code
+        status=ok_status_code
     )
     assert GitHub("foo/bar").get_all_stargazers() == sorted(['foo', 'bar', 'foo2', 'bar2'])
 
@@ -91,12 +91,12 @@ def test_get_all_stargazers_sorts_stargazers_two_pages(url_page_content_1: str,
 @responses.activate
 def test_get_all_stargazers_on_invalid_user_repo_raises(url_page_content_1: str,
                                                         invalid_user_and_repo: str,
-                                                        http_not_found_status_code: int) -> None:
+                                                        not_found_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/" + invalid_user_and_repo + "/stargazers?page=1",
         body=url_page_content_1,
-        status=http_not_found_status_code
+        status=not_found_status_code
     )
     with pytest.raises(UrlNotFoundError):
         GitHub(invalid_user_and_repo).get_all_stargazers()
@@ -104,24 +104,24 @@ def test_get_all_stargazers_on_invalid_user_repo_raises(url_page_content_1: str,
 
 @responses.activate
 def test_get_all_stargazers_on_too_many_requests_raises(url_page_content_1: str,
-                                                        http_too_many_requests_status_code: int) -> None:
+                                                        too_many_requests_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content_1,
-        status=http_too_many_requests_status_code
+        status=too_many_requests_status_code
     )
     with pytest.raises(TooManyRequestsHttpError):
         GitHub("foo/bar").get_all_stargazers()
 
 
 @responses.activate
-def test_provided_user_is_stargazer(url_page_content_1: str, http_ok_status_code: int) -> None:
+def test_provided_user_is_stargazer(url_page_content_1: str, ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content_1,
-        status=http_ok_status_code
+        status=ok_status_code
     )
     assert GitHub("foo/bar").is_stargazer("foo")
 
@@ -129,52 +129,52 @@ def test_provided_user_is_stargazer(url_page_content_1: str, http_ok_status_code
 @responses.activate
 def test_provided_user_is_stargazer_on_last_page(url_page_content_1: str,
                                                  url_page_content_2: str,
-                                                 http_ok_status_code: int) -> None:
+                                                 ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content_1,
-        status=http_ok_status_code
+        status=ok_status_code
     )
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=2",
         body=url_page_content_2,
-        status=http_ok_status_code
+        status=ok_status_code
     )
     assert GitHub("foo/bar").is_stargazer("bar2")
 
 
 @responses.activate
-def test_provided_user_is_not_stargazer(url_page_content_1: str, http_ok_status_code: int) -> None:
+def test_provided_user_is_not_stargazer(url_page_content_1: str, ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content_1,
-        status=http_ok_status_code
+        status=ok_status_code
     )
     assert not GitHub("foo/bar").is_stargazer("another_foo")
 
 
 @responses.activate
 def test_provided_user_is_not_stargazer_on_page_without_stargazers(url_page_content_without_stargazers: str,
-                                                                   http_ok_status_code: int) -> None:
+                                                                   ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content_without_stargazers,
-        status=http_ok_status_code
+        status=ok_status_code
     )
     assert not GitHub("foo/bar").is_stargazer("another_foo")
 
 
 @responses.activate
-def test_provided_user_on_invalid_page(url_page_content_1: str, http_not_found_status_code: int) -> None:
+def test_provided_user_on_invalid_page(url_page_content_1: str, not_found_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content_1,
-        status=http_not_found_status_code
+        status=not_found_status_code
     )
     with pytest.raises(UrlNotFoundError):
         GitHub("foo/bar").is_stargazer("foo")
@@ -182,38 +182,38 @@ def test_provided_user_on_invalid_page(url_page_content_1: str, http_not_found_s
 
 @responses.activate
 def test_provided_user_on_too_many_requests_page(url_page_content_1: str,
-                                                 http_too_many_requests_status_code: int) -> None:
+                                                 too_many_requests_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=url_page_content_1,
-        status=http_too_many_requests_status_code
+        status=too_many_requests_status_code
     )
     with pytest.raises(TooManyRequestsHttpError):
         GitHub("foo/bar").is_stargazer("foo")
 
 
 @responses.activate
-def test_provided_user_with_missing_hyperlink_tag(url_page_content_missing_hyperlink_tag: str,
-                                                  http_ok_status_code: int) -> None:
+def test_provided_user_with_missing_hyperlink_tag(url_page_content_no_hyperlink: str,
+                                                  ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
-        body=url_page_content_missing_hyperlink_tag,
-        status=http_ok_status_code
+        body=url_page_content_no_hyperlink,
+        status=ok_status_code
     )
     with pytest.raises(MissingHyperlinkTagError):
         GitHub("foo/bar").is_stargazer("foo")
 
 
 @responses.activate
-def test_provided_user_with_missing_href_attribute(url_page_content_missing_href_attribute: str,
-                                                   http_ok_status_code: int) -> None:
+def test_provided_user_with_missing_href_attribute(url_page_content_no_href: str,
+                                                   ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
-        body=url_page_content_missing_href_attribute,
-        status=http_ok_status_code
+        body=url_page_content_no_href,
+        status=ok_status_code
     )
     with pytest.raises(MissingHrefAttributeError):
         GitHub("foo/bar").is_stargazer("foo")
@@ -222,12 +222,12 @@ def test_provided_user_with_missing_href_attribute(url_page_content_missing_href
 @pytest.mark.parametrize("wrong_href_content", get_wrong_href_content())
 @responses.activate
 def test_wrong_href_content_raises(wrong_href_content: str,
-                                   http_ok_status_code: int) -> None:
+                                   ok_status_code: int) -> None:
     responses.add(
         responses.GET,
         "https://github.com/foo/bar/stargazers?page=1",
         body=get_page_content_with_href(wrong_href_content),
-        status=http_ok_status_code
+        status=ok_status_code
     )
     with pytest.raises(HrefContentError):
         GitHub("foo/bar").is_stargazer("foo")
