@@ -85,7 +85,7 @@ class GitHub:
         return os.path.join(self.__GITHUB_URL, self.__username, self.__repository)
 
     def __get_soup(self, url: str) -> typing.Optional[BeautifulSoup]:
-        response: requests.Response = requests.get(url)
+        response: requests.Response = requests.get(url, headers={'Content-Type': 'text/html'})
 
         status_code: int = response.status_code
         if status_code == self.__OK_STATUS_CODE:
