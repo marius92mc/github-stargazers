@@ -1,4 +1,6 @@
 # pylint: disable=no-member,invalid-name,redefined-outer-name
+import typing
+
 import pytest
 import responses
 
@@ -9,7 +11,7 @@ from tests import get_examples_invalid_user_repo, get_wrong_href_content, get_pa
 
 
 def test_wrong_argument_raises() -> None:
-    wrong_arguments = ["foo", "foo/", "/bar", "/", "//", ""]
+    wrong_arguments: typing.List[str] = ["foo", "foo/", "/bar", "/", "//", ""]
     for wrong_argument in wrong_arguments:
         with pytest.raises(UsernameRepositoryError):
             GitHub(wrong_argument)

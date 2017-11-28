@@ -1,4 +1,6 @@
 # pylint: disable=no-member,invalid-name,redefined-outer-name
+import typing
+
 from click.testing import CliRunner
 from click.testing import Result
 import pytest
@@ -51,9 +53,9 @@ def verify_invoke_from_clirunner(result: Result, expected_output: str) -> None:
 
 @responses.activate
 def test_wrong_arguments(wrong_arguments_message: str) -> None:
-    wrong_arguments = ["foo", "foo/", "/bar", "/", "//", ""]
+    wrong_arguments: typing.List[str] = ["foo", "foo/", "/bar", "/", "//", ""]
     for wrong_argument in wrong_arguments:
-        result = CliRunner().invoke(command_line, [wrong_argument])
+        result: Result = CliRunner().invoke(command_line, [wrong_argument])
         verify_invoke_from_clirunner(result, wrong_arguments_message)
 
 
@@ -66,7 +68,7 @@ def test_user_and_repository_shows_sorted_stargazers(url_page_content: str,
         body=url_page_content,
         status=ok_status_code
     )
-    result = CliRunner().invoke(command_line, ['foo/bar'])
+    result: Result = CliRunner().invoke(command_line, ['foo/bar'])
     verify_invoke_from_clirunner(result, 'Stargazers:\nbar\nfoo\n')
 
 
@@ -79,7 +81,7 @@ def test_get_all_stargazers_shows_message_on_page_without_stargazers(url_page_co
         body=url_page_content_without_stargazers,
         status=ok_status_code
     )
-    result = CliRunner().invoke(command_line, ['foo/baz'])
+    result: Result = CliRunner().invoke(command_line, ['foo/baz'])
     verify_invoke_from_clirunner(result, "0 stargazers.\n")
 
 
@@ -99,7 +101,7 @@ def test_get_all_stargazers_on_invalid_user_repo(url_page_content: str,
         status=not_found_status_code
     )
 
-    result = CliRunner().invoke(command_line, [invalid_user_and_repo])
+    result: Result = CliRunner().invoke(command_line, [invalid_user_and_repo])
     verify_invoke_from_clirunner(result, http_not_found(invalid_user_and_repo))
 
 
@@ -118,7 +120,7 @@ def test_get_all_stargazers_on_too_many_requests(url_page_content: str,
         body=url_page_content,
         status=too_many_requests_status_code
     )
-    result = CliRunner().invoke(command_line, ['foo/bar'])
+    result: Result = CliRunner().invoke(command_line, ['foo/bar'])
     verify_invoke_from_clirunner(result, http_too_many_requests)
 
 
@@ -132,7 +134,7 @@ def test_is_stargazer(url_page_content: str,
         body=url_page_content,
         status=ok_status_code
     )
-    result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
+    result: Result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
     verify_invoke_from_clirunner(result, stargazer)
 
 
@@ -146,7 +148,7 @@ def test_not_a_stargazer(url_page_content: str,
         body=url_page_content,
         status=ok_status_code
     )
-    result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'another_foo'])
+    result: Result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'another_foo'])
     verify_invoke_from_clirunner(result, not_a_stargazer)
 
 
@@ -159,7 +161,7 @@ def test_stargazer_on_invalid_page(url_page_content: str,
         body=url_page_content,
         status=not_found_status_code
     )
-    result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
+    result: Result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
     verify_invoke_from_clirunner(result, http_not_found("foo/bar"))
 
 
@@ -173,7 +175,7 @@ def test_stargazer_on_too_many_requests_page(url_page_content: str,
         body=url_page_content,
         status=too_many_requests_status_code
     )
-    result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
+    result: Result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
     verify_invoke_from_clirunner(result, http_too_many_requests)
 
 
@@ -192,7 +194,7 @@ def test_stargazer_on_missing_hyperlink_tag(url_page_content_no_hyperlink: str,
         body=url_page_content_no_hyperlink,
         status=ok_status_code
     )
-    result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
+    result: Result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
     verify_invoke_from_clirunner(result, missing_hyperlink_tag)
 
 
@@ -211,7 +213,7 @@ def test_stargazer_on_missing_href_attribute(url_page_content_no_href: str,
         body=url_page_content_no_href,
         status=ok_status_code
     )
-    result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
+    result: Result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
     verify_invoke_from_clirunner(result, missing_href_attribute)
 
 
@@ -230,5 +232,5 @@ def test_wrong_href_content(wrong_href_content: str,
         body=get_page_content_with_href(wrong_href_content),
         status=ok_status_code
     )
-    result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
+    result: Result = CliRunner().invoke(command_line, ['foo/bar', '--user', 'foo'])
     verify_invoke_from_clirunner(result, wrong_href(halo_fail, wrong_href_content))

@@ -1,6 +1,6 @@
-import typing
 import os
 import re
+import typing
 
 from bs4 import BeautifulSoup
 from bs4 import element
@@ -67,8 +67,8 @@ class GitHub:
 
     def __init__(self, username_and_repository: str) -> None:
         self.__username, self.__repository = GitHub.__extract_user_and_repo(username_and_repository)
-        self.__repository_url = self.__get_repository_url()
-        self.__stargazers_base_url = self.__repository_url + self.__STARGAZERS_URL_SUFFIX
+        self.__repository_url: str = self.__get_repository_url()
+        self.__stargazers_base_url: str = self.__repository_url + self.__STARGAZERS_URL_SUFFIX
 
     @classmethod
     def __extract_user_and_repo(cls, username_and_repository: str) -> typing.Optional[typing.Tuple[str, str]]:
@@ -81,10 +81,10 @@ class GitHub:
 
         return components[0], components[1]
 
-    def __get_repository_url(self):
+    def __get_repository_url(self) -> str:
         return os.path.join(self.__GITHUB_URL, self.__username, self.__repository)
 
-    def __get_soup(self, url: str) -> typing.Optional[BeautifulSoup]:
+    def __get_soup(self, url: str) -> BeautifulSoup:
         response: requests.Response = requests.get(url, headers={'Content-Type': 'text/html'})
 
         status_code: int = response.status_code
