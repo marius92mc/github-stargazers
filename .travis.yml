@@ -3,13 +3,13 @@ python:
   - "3.6.2"
 
 os:
-  - linux
+  - osx
 
 env:
   - PIPENV_IGNORE_VIRTUALENVS=1
 
 install:
-  - pip3 install pipenv
+  - brew install pipenv
   - pipenv run python setup.py install
   - pipenv install --dev
 
