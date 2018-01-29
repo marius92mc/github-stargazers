@@ -39,16 +39,16 @@
         },
         "astroid": {
             "hashes": [
-                "sha256:badf6917ef7eb0ade0ea6eae347aed1e3f8f4c9375a02916f5cc450b3c8a64c0",
-                "sha256:71dadba2110008e2c03f9fde662ddd2053db3c0489d0e03c94e828a0399edd4f"
+                "sha256:db5cfc9af6e0b60cd07c19478fb54021fc20d2d189882fbcbc94fc69a8aecc58",
+                "sha256:f0a0e386dbca9f93ea9f3ea6f32b37a24720502b7baa9cb17c3976a680d43a06"
             ],
-            "version": "==1.6.0"
+            "version": "==1.6.1"
         },
         "autopep8": {
             "hashes": [
-                "sha256:ff787bffb812818c3071784b5ce9a35f8c481a0de7ea0ce4f8b68b8788a12f30"
+                "sha256:c7be71ab0cb2f50c9c22c82f0c9acaafc6f57492c3fbfee9790c415005c2b9a5"
             ],
-            "version": "==1.3.3"
+            "version": "==1.3.4"
         },
         "backports.shutil-get-terminal-size": {
             "hashes": [
@@ -67,10 +67,10 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:244be0d93b71e93fc0a0a479862051414d0e00e16435707e5bf5000f92e04694",
-                "sha256:5ec74291ca1136b40f0379e1128ff80e866597e4e2c1e755739a913bbc3613c0"
+                "sha256:14131608ad2fd56836d33a71ee60fa1c82bc9d2c8d98b7bdbc631fe1b3cd1296",
+                "sha256:edbc3f203427eef571f79a7692bb160a2b0f7ccaa31953e99bd17e307cf63f7d"
             ],
-            "version": "==2017.11.5"
+            "version": "==2018.1.18"
         },
         "chardet": {
             "hashes": [
@@ -318,10 +318,10 @@
         },
         "pylint": {
             "hashes": [
-                "sha256:c8e59da0f2f9990eb00aad1c1de16cd7809315842ebccc3f65ca9df46213df3b",
-                "sha256:3035e44e37cd09919e9edad5573af01d7c6b9c52a0ebb4781185ae7ab690458b"
+                "sha256:156839bedaa798febee72893beef00c650c2e7abafb5586fc7a6a56be7f80412",
+                "sha256:4fe3b99da7e789545327b75548cee6b511e4faa98afe268130fea1af4b5ec022"
             ],
-            "version": "==1.8.1"
+            "version": "==1.8.2"
         },
         "pypandoc": {
             "hashes": [
@@ -465,9 +465,9 @@
         },
         "autopep8": {
             "hashes": [
-                "sha256:ff787bffb812818c3071784b5ce9a35f8c481a0de7ea0ce4f8b68b8788a12f30"
+                "sha256:c7be71ab0cb2f50c9c22c82f0c9acaafc6f57492c3fbfee9790c415005c2b9a5"
             ],
-            "version": "==1.3.3"
+            "version": "==1.3.4"
         },
         "colorful": {
             "hashes": [
@@ -534,10 +534,10 @@
         },
         "prettyprinter": {
             "hashes": [
-                "sha256:2c368903d603a301f810b2522183b33d1d34303926f25b40a31fab8ccf452664",
-                "sha256:3284a3cf227b121fcb1d512f735ae170e48a38482680afb440e72e2a55c847f0"
+                "sha256:f996155547e3b86178c4da2a96dbe8ffada9c55183bb58530a4739164180b896",
+                "sha256:8bf69e0c08fedef0ed1528b12f2801cc58bf0d21505d6fb7677a7b1f94daa573"
             ],
-            "version": "==0.10.1"
+            "version": "==0.12.0"
         },
         "prompt-toolkit": {
             "hashes": [
