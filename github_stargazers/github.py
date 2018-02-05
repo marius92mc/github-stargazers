@@ -4,6 +4,7 @@ import typing
 
 from bs4 import BeautifulSoup
 from bs4 import element
+import enforce
 import requests
 
 
@@ -49,6 +50,7 @@ class HrefContentError(Exception):
         super().__init__(f"Wrong 'href' content: '{href_content}'. It should be of form /username.")
 
 
+@enforce.runtime_validation
 class GitHub:
     """Creates a GitHub instance for listing the stargazers of a given repository
     and checking if a user's full name is in the list of stargazers.

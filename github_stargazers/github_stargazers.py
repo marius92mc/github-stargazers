@@ -1,6 +1,7 @@
 import typing
 import click
 
+import enforce
 from halo import Halo
 
 from github_stargazers.github import GitHub
@@ -8,6 +9,7 @@ from github_stargazers.github import UsernameRepositoryError, TooManyRequestsHtt
 from github_stargazers.github import MissingHyperlinkTagError, MissingHrefAttributeError, HrefContentError
 
 
+@enforce.runtime_validation
 class _OutputPrintable(object):
     @staticmethod
     def print_stargazers(stargazers: typing.List[str]) -> None:
@@ -23,6 +25,7 @@ class _OutputPrintable(object):
         return Halo().succeed("Stargazer") if is_stargazer else Halo().fail("Not a Stargazer")
 
 
+@enforce.runtime_validation
 class _Command:  # pylint: disable=too-few-public-methods
 
     def __init__(self, username_and_repository: str, user: str) -> None:
@@ -54,6 +57,7 @@ class _Command:  # pylint: disable=too-few-public-methods
             return None
 
 
+@enforce.runtime_validation
 @click.command()
 @click.argument('username_and_repository')
 @click.option('--user', default=None, help='User name to see if it is a stargazer')
