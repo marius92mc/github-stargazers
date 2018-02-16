@@ -51,7 +51,6 @@ class _Command:  # pylint: disable=too-few-public-methods
         except (TooManyRequestsHttpError, UrlNotFoundError,
                 MissingHyperlinkTagError, MissingHrefAttributeError, HrefContentError) as exception_message:
             Halo().fail(exception_message)
-            return None
 
 
 @click.command()
