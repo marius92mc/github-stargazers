@@ -14,7 +14,7 @@ install:
   - pipenv install --dev
 
 script:
-  - pipenv run mypy github_stargazers/* tests/*
+  - pipenv run mypy github_stargazers tests
   - pipenv run pylint github_stargazers/* tests/*
   - pipenv run pytest -vv
 
