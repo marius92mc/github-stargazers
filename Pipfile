@@ -1,13 +1,16 @@
 [[source]]
+
 verify_ssl = true
 name = "pypi"
 url = "https://pypi.python.org/simple"
 
+
 [packages]
+
 mypy = "*"
 pylint = "*"
 requests = "*"
-beautifulsoup4 = "*"
+"beautifulsoup4" = "*"
 click = "*"
 halo = "*"
 ipython = "*"
@@ -15,16 +18,21 @@ ipdb = "*"
 py = "*"
 mock = "*"
 responses = "*"
-autopep8 = "*"
+"autopep8" = "*"
 twine = "*"
 wheel = "*"
 setuptools = "*"
 pypandoc = "*"
 
+
 [requires]
+
 python_version = "3.6"
 
+
 [dev-packages]
+
 ipython = "*"
-autopep8 = "*"
+"autopep8" = "*"
 pytest = "*"
+asciinema = "*"
