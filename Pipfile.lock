@@ -447,6 +447,19 @@
             ],
             "version": "==0.1.0"
         },
+        "asciinema": {
+            "hashes": [
+                "sha256:be193e2513cd309dd8de5b92d22bd48752076fe269ee3fb56da1052e5acc3768"
+            ],
+            "version": "==2.0.0"
+        },
+        "attrs": {
+            "hashes": [
+                "sha256:a17a9573a6f475c99b551c0e0a812707ddda1ec9653bed04c13841404ed6f450",
+                "sha256:1c7960ccfd6a005cd9f7ba884e6316b5e430a3f1a6c37c5f87d8b43f83b54ec9"
+            ],
+            "version": "==17.4.0"
+        },
         "autopep8": {
             "hashes": [
                 "sha256:ff787bffb812818c3071784b5ce9a35f8c481a0de7ea0ce4f8b68b8788a12f30"
